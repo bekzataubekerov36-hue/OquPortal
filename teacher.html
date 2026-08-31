@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OQU Portal — Мұғалім панелі</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* БАСЫНДЫҚ СТИЛЬДЕР */
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --accent: #4cc9f0;
+      --success: #4ade80;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 70px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      font-size: 1.75rem;
+      background: rgba(255, 255, 255, 0.2);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .menu-toggle {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: white;
+      transition: var(--transition);
+    }
+
+    .menu-toggle:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .user-profile:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .user-role {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .logout-btn {
+      background: rgba(239, 68, 68, 0.9);
+      border: none;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .logout-btn:hover {
+      background: var(--danger);
+      transform: translateY(-2px);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: -300px;
+      width: 280px;
+      height: calc(100vh - 70px);
+      background: white;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      transition: var(--transition);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 70px);
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .sidebar-header h3 {
+      color: var(--dark);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .nav-item {
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--transition);
+      color: var(--gray);
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .nav-item:hover {
+      background: var(--gray-light);
+      color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(67, 97, 238, 0.1) 0%, rgba(114, 9, 183, 0.1) 100%);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+    }
+
+    .nav-item i {
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      padding: 5.5rem 2rem 2rem;
+      transition: var(--transition);
+      min-height: 100vh;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h2 {
+      font-size: 2rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    /* CARDS */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--gray-light);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .card-icon.blue {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+
+    .card-icon.purple {
+      background: linear-gradient(135deg, var(--secondary), #9d4edd);
+    }
+
+    .card-icon.green {
+      background: linear-gradient(135deg, var(--success), #10b981);
+    }
+
+    .card-icon.orange {
+      background: linear-gradient(135deg, var(--warning), #f97316);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .card p {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .card-change {
+      font-size: 0.9rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .card-change.positive {
+      background: rgba(74, 222, 128, 0.15);
+      color: #059669;
+    }
+
+    .card-change.negative {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    /* STATS SECTION */
+    .stats-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--light);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .stat-item:hover {
+      background: var(--gray-light);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .stat-info h4 {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-info p {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* TESTS PAGE STYLES */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--gray-light);
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      background: white;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 0 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      color: var(--gray);
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      background: none;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(67, 97, 238, 0.05);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* FORMS */
+    .form-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--gray-light);
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .btn {
+      padding: 0.9rem 1.8rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      text-decoration: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(90deg, var(--success), #22c55e);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(90deg, var(--danger), #dc2626);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(90deg, var(--warning), #ea580c);
+      color: white;
+    }
+
+    /* QUESTIONS CONTAINER */
+    .question-container {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--gray-light);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .question-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .question-type-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .question-options {
+      display: grid;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--light);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+    }
+
+    .option-item.correct {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: var(--success);
+    }
+
+    .option-input {
+      flex: 1;
+    }
+
+    .correct-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .option-label {
+      font-weight: 600;
+      color: var(--dark);
+      min-width: 30px;
+    }
+
+    .add-option-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--light);
+      border: 1px dashed var(--gray);
+      border-radius: var(--radius-sm);
+      color: var(--gray);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .add-option-btn:hover {
+      background: var(--gray-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .remove-question-btn {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .remove-question-btn:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* TEST PREVIEW */
+    .test-preview {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-top: 2rem;
+      border: 2px dashed var(--primary);
+    }
+
+    .preview-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .preview-question {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--light);
+      border-radius: var(--radius-sm);
+    }
+
+    .preview-answer {
+      padding: 0.75rem;
+      background: rgba(74, 222, 128, 0.1);
+      border-radius: var(--radius-sm);
+      margin-top: 0.5rem;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    /* TABLE */
+    .table-container {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .table-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--light);
+    }
+
+    th {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark);
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    tr:hover {
+      background: rgba(67, 97, 238, 0.03);
+    }
+
+    .badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-success {
+      background: rgba(74, 222, 128, 0.15);
+      color: #059669;
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #d97706;
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .badge-info {
+      background: rgba(67, 97, 238, 0.15);
+      color: var(--primary);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      width: 35px;
+      height: 35px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .action-btn.edit {
+      background: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+
+    .action-btn.edit:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .action-btn.delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .action-btn.delete:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    .action-btn.view {
+      background: rgba(74, 222, 128, 0.1);
+      color: var(--success);
+    }
+
+    .action-btn.view:hover {
+      background: var(--success);
+      color: white;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .modal-header h3 {
+      color: var(--dark);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+    }
+
+    /* OTHER STYLES */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-light);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--gray-light);
+      background: white;
+      margin-top: 2rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+        height: 60px;
+      }
+      
+      .logo h1 {
+        font-size: 1.2rem;
+      }
+      
+      .user-name {
+        display: none;
+      }
+      
+      .main-content {
+        padding: 4.5rem 1rem 1rem;
+      }
+      
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .tabs {
+        padding: 0 1rem;
+      }
+      
+      .tab-btn {
+        padding: 0.8rem 1rem;
+      }
+      
+      .sidebar {
+        top: 60px;
+        height: calc(100vh - 60px);
+      }
+      
+      .sidebar-overlay {
+        top: 60px;
+        height: calc(100vh - 60px);
+      }
+    }
+
+    /* Clickable elements */
+    .clickable {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div>
+          <h1>OQU<span>Portal</span></h1>
+          <p style="font-size: 0.8rem; opacity: 0.9;">Мұғалім панелі</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <div class="user-profile" id="userProfile">
+        <div class="avatar" id="userAvatar">МӘ</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Мұғалім Әділ</div>
+          <div class="user-role" id="userRole">Мұғалім</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Шығу
+      </button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fas fa-columns"></i> Басқару панелі</h3>
+    </div>
+    
+    <ul class="nav-menu">
+      <li><button class="nav-item active" data-page="dashboard">
+        <i class="fas fa-home"></i> Басты бет
+      </button></li>
+      <li><button class="nav-item" data-page="tests">
+        <i class="fas fa-file-alt"></i> Тест салу
+      </button></li>
+      <li><button class="nav-item" data-page="questions">
+        <i class="fas fa-question-circle"></i> Сұрақтар қоры
+      </button></li>
+      <li><button class="nav-item" data-page="results">
+        <i class="fas fa-chart-bar"></i> Нәтижелер
+      </button></li>
+      <li><button class="nav-item" data-page="audience">
+        <i class="fas fa-users"></i> Оқушылар
+      </button></li>
+      <li><button class="nav-item" data-page="analytics">
+        <i class="fas fa-chart-line"></i> Аналитика
+      </button></li>
+      <li><button class="nav-item" data-page="settings">
+        <i class="fas fa-cog"></i> Баптаулар
+      </button></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard" class="page active">
+      <div class="page-header">
+        <h2>Қош келдіңіз, Мұғалім Әділ!</h2>
+        <p>OQU Portal білім беру платформасына қош келдіңіз</p>
+      </div>
+      
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions" style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="showPage('tests')">
+          <i class="fas fa-plus-circle"></i> Жаңа тест құру
+        </button>
+        <button class="btn btn-outline" onclick="showPage('tests'); showTab('my-tests');">
+          <i class="fas fa-list"></i> Барлық тесттерді көру
+        </button>
+        <button class="btn btn-outline" onclick="showPage('results')">
+          <i class="fas fa-chart-bar"></i> Бүгінгі нәтижелер
+        </button>
+        <button class="btn btn-outline" onclick="showPage('audience')">
+          <i class="fas fa-user-check"></i> Белсенді оқушылар
+        </button>
+      </div>
+      
+      <!-- STATS CARDS -->
+      <div class="cards-grid">
+        <div class="card" onclick="showPage('tests')">
+          <div class="card-header">
+            <div class="card-icon blue">
+              <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="card-change positive">
+              <i class="fas fa-arrow-up"></i> 12%
+            </div>
+          </div>
+          <h3>Жалпы тесттер</h3>
+          <p>Барлығы құрылған тесттер</p>
+          <div class="card-value">15</div>
+        </div>
+        
+        <div class="card" onclick="showPage('audience')">
+          <div class="card-header">
+            <div class="card-icon purple">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="card-change positive">
+              <i class="fas fa-arrow-up"></i> 8%
+            </div>
+          </div>
+          <h3>Белсенді оқушылар</h3>
+          <p>Соңғы 7 күнде белсенді болғандар</p>
+          <div class="card-value">42</div>
+        </div>
+        
+        <div class="card" onclick="showPage('results')">
+          <div class="card-header">
+            <div class="card-icon green">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="card-change positive">
+              <i class="fas fa-arrow-up"></i> 5%
+            </div>
+          </div>
+          <h3>Орындалған тесттер</h3>
+          <p>Бұл айда орындалған тесттер</p>
+          <div class="card-value">128</div>
+        </div>
+        
+        <div class="card" onclick="showPage('analytics')">
+          <div class="card-header">
+            <div class="card-icon orange">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-change negative">
+              <i class="fas fa-arrow-down"></i> 3%
+            </div>
+          </div>
+          <h3>Орташа уақыт</h3>
+          <p>Тестті орындауға кеткен орташа уақыт</p>
+          <div class="card-value">24м</div>
+        </div>
+      </div>
+      
+      <!-- RECENT ACTIVITY -->
+      <div class="table-container">
+        <div class="table-header">
+          <div>
+            <h3>Соңғы белсенділік</h3>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.25rem;">
+              Соңғы 5 белсенділік
+            </p>
+          </div>
+          <button class="btn btn-outline" onclick="showPage('results')">
+            <i class="fas fa-list"></i> Барлығын көру
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Оқушы</th>
+              <th>Тест</th>
+              <th>Нәтиже</th>
+              <th>Уақыт</th>
+              <th>Күні</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">
+                    АС
+                  </div>
+                  <strong>Айгүл С.</strong>
+                </div>
+              </td>
+              <td>Математика негіздері</td>
+              <td><span class="badge badge-success">92%</span></td>
+              <td>15:23</td>
+              <td>20.03.2024</td>
+            </tr>
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">
+                    БЖ
+                  </div>
+                  <strong>Бақыт Ж.</strong>
+                </div>
+              </td>
+              <td>Физика: механика</td>
+              <td><span class="badge badge-warning">85%</span></td>
+              <td>22:10</td>
+              <td>19.03.2024</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- TESTS PAGE (СІЗДІҢ ЖАҢА ТЕСТ САЛУ БӨЛІМІ) -->
+    <div id="tests" class="page">
+      <div class="page-header">
+        <h2>Тест салу</h2>
+        <p>Жаңа тест құрып, оқушыларға жіберіңіз</p>
+        <div style="background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(67, 97, 238, 0.1)); padding: 1rem; border-radius: var(--radius-sm); margin-top: 1rem;">
+          <p style="margin: 0; font-size: 0.95rem; color: var(--primary);">
+            <i class="fas fa-info-circle"></i> <strong>Жаңа мүмкіндік:</strong> Енді сіз тест құрып, дұрыс жауаптарымен бірге оқушыларға жібере аласыз!
+          </p>
+        </div>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="create-test">Тест құру</button>
+        <button class="tab-btn" data-tab="send-test">Тест жіберу</button>
+        <button class="tab-btn" data-tab="my-tests">Менің тесттерім</button>
+      </div>
+      
+      <!-- Create Test Tab -->
+      <div id="create-test" class="tab-content active">
+        <div class="form-container">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Тест атауы <span style="color: var(--danger);">*</span></label>
+              <input type="text" class="form-input" placeholder="Мысалы: Математика 8 сынып, 1 тоқсан" id="testName">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Пән <span style="color: var(--danger);">*</span></label>
+              <select class="form-select" id="testSubject">
+                <option value="">Пәнді таңдаңыз</option>
+                <option>Математика</option>
+                <option>Физика</option>
+                <option>Химия</option>
+                <option>Биология</option>
+                <option>Қазақ тілі</option>
+                <option>Қазақ әдебиеті</option>
+                <option>Орыс тілі</option>
+                <option>Ағылшын тілі</option>
+                <option>Тарих</option>
+                <option>География</option>
+                <option>Информатика</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Сынып <span style="color: var(--danger);">*</span></label>
+              <select class="form-select" id="testGrade">
+                <option value="">Сыныпты таңдаңыз</option>
+                <option>5 сынып</option>
+                <option>6 сынып</option>
+                <option>7 сынып</option>
+                <option>8 сынып</option>
+                <option>9 сынып</option>
+                <option>10 сынып</option>
+                <option>11 сынып</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Күні <span style="color: var(--danger);">*</span></label>
+              <input type="date" class="form-input" id="testDate" value="">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Тест түрі <span style="color: var(--danger);">*</span></label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; transition: var(--transition);">
+                <input type="radio" name="testType" value="single" checked>
+                <div>
+                  <div style="font-weight: 600;">Бір дұрыс жауап</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">1 дұрыс жауап бар</div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; transition: var(--transition);">
+                <input type="radio" name="testType" value="multiple">
+                <div>
+                  <div style="font-weight: 600;">Бірнеше дұрыс жауап</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">Бірнеше дұрыс жауап</div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; transition: var(--transition);">
+                <input type="radio" name="testType" value="withAnswers">
+                <div>
+                  <div style="font-weight: 600;">Жауабымен тест</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">Дұрыс жауаптарымен</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Нұсқаулар</label>
+            <textarea class="form-textarea" placeholder="Тестке арналған нұсқаулар..." rows="2" id="testInstructions"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <label class="form-label">Сұрақтар тізімі</label>
+              <button class="btn btn-outline" onclick="addQuestion()">
+                <i class="fas fa-plus"></i> Сұрақ қосу
+              </button>
+            </div>
+            
+            <div id="questionsContainer">
+              <!-- Сұрақтар осында пайда болады -->
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="saveTest()">
+              <i class="fas fa-save"></i> Тестті сақтау
+            </button>
+            <button class="btn btn-success" onclick="previewTest()">
+              <i class="fas fa-eye"></i> Алдын ала қарау
+            </button>
+            <button class="btn btn-warning" onclick="resetTest()">
+              <i class="fas fa-redo"></i> Тазарту
+            </button>
+          </div>
+        </div>
+        
+        <!-- Test Preview -->
+        <div id="testPreview" class="test-preview" style="display: none;">
+          <div class="preview-header">
+            <h3 id="previewTestName">Тест атауы</h3>
+            <p id="previewTestInfo">Пән • Сынып • Күні</p>
+          </div>
+          <div id="previewQuestions">
+            <!-- Алдын ала қарау сұрақтары осында пайда болады -->
+          </div>
+          <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="closePreview()">
+              <i class="fas fa-times"></i> Жабу
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Send Test Tab -->
+      <div id="send-test" class="tab-content">
+        <div class="form-container">
+          <div class="form-group">
+            <label class="form-label">Таңдалған тест</label>
+            <select class="form-select" id="testToSend" onchange="loadTestForSending()">
+              <option value="">Тест таңдаңыз...</option>
+            </select>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Басталу күні</label>
+              <input type="datetime-local" class="form-input" id="startDate">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Аяқталу күні</label>
+              <input type="datetime-local" class="form-input" id="endDate">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Оқушыларды таңдау</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer;">
+                <input type="radio" name="studentSelection" value="all" checked>
+                <div>
+                  <div style="font-weight: 600;">Барлық оқушылар</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">Сыныптағы барлығы</div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer;">
+                <input type="radio" name="studentSelection" value="selected">
+                <div>
+                  <div style="font-weight: 600;">Таңдап алу</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">Оқушыларды бөлек таңдау</div>
+                </div>
+              </label>
+              
+              <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--light); border-radius: var(--radius-sm); cursor: pointer;">
+                <input type="radio" name="studentSelection" value="group">
+                <div>
+                  <div style="font-weight: 600;">Топқа</div>
+                  <div style="font-size: 0.85rem; color: var(--gray);">Топтар бойынша</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Қосымша параметрлер</label>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="showResults">
+                <span>Нәтижелерді көрсету</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="showAnswers" checked>
+                <span>Жауаптарды көрсету</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="timeLimit">
+                <span>Уақыт шектеуі</span>
+              </label>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" onclick="sendTest()" style="width: 100%; margin-top: 1rem;">
+            <i class="fas fa-paper-plane"></i> Тестті жіберу
+          </button>
+        </div>
+      </div>
+      
+      <!-- My Tests Tab -->
+      <div id="my-tests" class="tab-content">
+        <div class="table-container">
+          <div class="table-header">
+            <h3>Менің тесттерім</h3>
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn btn-outline" onclick="showTab('create-test')">
+                <i class="fas fa-plus"></i> Жаңа тест
+              </button>
+            </div>
+          </div>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Атауы</th>
+                <th>Пән</th>
+                <th>Сынып</th>
+                <th>Күні</th>
+                <th>Әрекеттер</th>
+              </tr>
+            </thead>
+            <tbody id="myTestsList">
+              <!-- Тесттер тізімі осында пайда болады -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- QUESTIONS PAGE -->
+    <div id="questions" class="page">
+      <div class="page-header">
+        <h2>Сұрақтар қоры</h2>
+        <p>Барлық сұрақтарыңызды бір жерде басқарыңыз</p>
+      </div>
+      
+      <!-- Questions content -->
+      <div class="form-container">
+        <h3 style="margin-bottom: 1rem;">Сұрақтар базасы</h3>
+        <p>Бұл бетте барлық сұрақтарыңызды басқара аласыз.</p>
+      </div>
+    </div>
+    
+    <!-- RESULTS PAGE -->
+    <div id="results" class="page">
+      <div class="page-header">
+        <h2>Нәтижелер</h2>
+        <p>Оқушылардың тест нәтижелері</p>
+      </div>
+      
+      <!-- Results content -->
+      <div class="form-container">
+        <h3 style="margin-bottom: 1rem;">Нәтижелерді талдау</h3>
+        <p>Бұл бетте оқушылардың барлық тест нәтижелерін көре аласыз.</p>
+      </div>
+    </div>
+    
+    <!-- AUDIENCE PAGE -->
+    <div id="audience" class="page">
+      <div class="page-header">
+        <h2>Оқушылар</h2>
+        <p>Оқушылардың тізімі мен статистикасы</p>
+      </div>
+      
+      <!-- Audience content -->
+      <div class="form-container">
+        <h3 style="margin-bottom: 1rem;">Оқушылар тізімі</h3>
+        <p>Бұл бетте барлық оқушылардың тізімін көре аласыз.</p>
+      </div>
+    </div>
+    
+    <!-- ANALYTICS PAGE -->
+    <div id="analytics" class="page">
+      <div class="page-header">
+        <h2>Аналитика</h2>
+        <p>Толық статистика және талдау</p>
+      </div>
+      
+      <!-- Analytics content -->
+      <div class="form-container">
+        <h3 style="margin-bottom: 1rem;">Статистикалық талдау</h3>
+        <p>Бұл бетте платформаның толық статистикасын көре аласыз.</p>
+      </div>
+    </div>
+    
+    <!-- SETTINGS PAGE -->
+    <div id="settings" class="page">
+      <div class="page-header">
+        <h2>Баптаулар</h2>
+        <p>Аккаунт параметрлерін өзгертіңіз</p>
+      </div>
+      
+      <!-- Settings content -->
+      <div class="form-container">
+        <h3 style="margin-bottom: 1rem;">Профиль баптаулары</h3>
+        <p>Бұл бетте өз профиліңізді баптай аласыз.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- Send Test Confirmation Modal -->
+  <div class="modal" id="sendTestModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-paper-plane"></i> Тест жіберу</h3>
+        <button class="modal-close" onclick="closeModal('sendTestModal')">&times;</button>
+      </div>
+      <div style="text-align: center; padding: 2rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(67, 97, 238, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem; margin: 0 auto 1rem;">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 style="margin-bottom: 0.5rem;">Тест сәтті жіберілді!</h3>
+        <p style="color: var(--gray); margin-bottom: 1.5rem;" id="sendTestMessage">Тест оқушыларға жіберілді.</p>
+        <button class="btn btn-primary" style="width: 100%;" onclick="closeModal('sendTestModal')">
+          <i class="fas fa-check"></i> Жақсы
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>OQU Portal © 2024. Барлық құқықтар қорғалған. | v3.1.0</p>
+  </footer>
+
+  <script>
+    // ========== ГЛОБАЛДЫ АЙНЫМАЛЫЛАР ==========
+    let currentTest = {
+      id: null,
+      name: '',
+      subject: '',
+      grade: '',
+      date: '',
+      type: 'single',
+      instructions: '',
+      questions: []
+    };
+
+    let savedTests = JSON.parse(localStorage.getItem('teacherTests')) || [];
+
+    // ========== БЕТ БАСҚАРУ ФУНКЦИЯЛАРЫ ==========
+    function showPage(pageId) {
+      // Барлық беттерді жасыру
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      // Таңдалған бетті көрсету
+      const selectedPage = document.getElementById(pageId);
+      if (selectedPage) {
+        selectedPage.classList.add('active');
+      }
+      
+      // Навигацияны жаңарту
+      setActiveNav(pageId);
+      
+      // Мобильдік режимде sidebar жабу
+      if (window.innerWidth < 768) {
+        toggleSidebar();
+      }
+    }
+
+    function setActiveNav(pageId) {
+      // Барлық навигация элементтерінен active классын алып тастау
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Таңдалған элементке active классын қосу
+      const activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+      if (activeNav) {
+        activeNav.classList.add('active');
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    // ========== ТАПСЫРМА БАСҚАРУ ==========
+    function showTab(tabId) {
+      // Барлық тапсырма түймелерінен active классын алып тастау
+      document.querySelectorAll('.tab-btn').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Барлық тапсырма мазмұндарын жасыру
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Таңдалған тапсырма түймесін белгілеу
+      const activeTabBtn = document.querySelector(`[data-tab="${tabId}"]`);
+      if (activeTabBtn) {
+        activeTabBtn.classList.add('active');
+      }
+      
+      // Таңдалған тапсырма мазмұнын көрсету
+      const activeTabContent = document.getElementById(tabId);
+      if (activeTabContent) {
+        activeTabContent.classList.add('active');
+      }
+      
+      // Егер "Тест жіберу" тапсырмасы болса, тесттер тізімін толтыру
+      if (tabId === 'send-test') {
+        loadTestsForSending();
+      } else if (tabId === 'my-tests') {
+        loadMyTests();
+      }
+    }
+
+    // ========== МОДАЛ ТЕРЕЗЕ БАСҚАРУ ==========
+    function showModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ========== СҰРАҚ ФУНКЦИЯЛАРЫ ==========
+    function addQuestion() {
+      const questionId = Date.now();
+      const questionNumber = currentTest.questions.length + 1;
+      
+      const questionHTML = `
+        <div class="question-container" id="question-${questionId}">
+          <div class="question-header">
+            <div>
+              <div class="question-title">${questionNumber}. Сұрақ</div>
+              <div style="font-size: 0.9rem; color: var(--gray); margin-top: 0.25rem;">
+                Дұрыс жауаптарды белгілеңіз
+              </div>
+            </div>
+            <span class="question-type-badge" style="background: rgba(67, 97, 238, 0.1); color: var(--primary);">
+              ${document.querySelector('input[name="testType"]:checked').value === 'single' ? 'Бір дұрыс' : 
+                document.querySelector('input[name="testType"]:checked').value === 'multiple' ? 'Бірнеше дұрыс' : 'Жауабымен'}
+            </span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Сұрақ мәтіні</label>
+            <textarea class="form-textarea question-text" placeholder="Сұрақ мәтінін енгізіңіз..." rows="2"></textarea>
+          </div>
+          
+          <div class="question-options" id="options-${questionId}">
+            <div class="option-item">
+              <span class="option-label">А</span>
+              <input type="text" class="form-input option-input" placeholder="Жауап нұсқасы А">
+              <input type="${document.querySelector('input[name="testType"]:checked').value === 'multiple' ? 'checkbox' : 'radio'}" 
+                     name="correct-${questionId}" 
+                     class="correct-checkbox" 
+                     value="0">
+            </div>
+            <div class="option-item">
+              <span class="option-label">Б</span>
+              <input type="text" class="form-input option-input" placeholder="Жауап нұсқасы Б">
+              <input type="${document.querySelector('input[name="testType"]:checked').value === 'multiple' ? 'checkbox' : 'radio'}" 
+                     name="correct-${questionId}" 
+                     class="correct-checkbox" 
+                     value="1">
+            </div>
+          </div>
+          
+          <button type="button" class="add-option-btn" onclick="addOption(${questionId})">
+            <i class="fas fa-plus"></i> Жауап нұсқасын қосу
+          </button>
+          
+          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+            <button type="button" class="remove-question-btn" onclick="removeQuestion(${questionId})">
+              <i class="fas fa-trash"></i> Сұрақты жою
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('questionsContainer').insertAdjacentHTML('beforeend', questionHTML);
+      
+      // Сұрақ нөмірлерін жаңарту
+      updateQuestionNumbers();
+    }
+
+    function addOption(questionId) {
+      const optionsContainer = document.getElementById(`options-${questionId}`);
+      const optionCount = optionsContainer.children.length;
+      const optionLetters = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З'];
+      
+      if (optionCount >= 8) {
+        alert('Максимум 8 жауап нұсқасын қосуға болады');
+        return;
+      }
+      
+      const optionHTML = `
+        <div class="option-item">
+          <span class="option-label">${optionLetters[optionCount]}</span>
+          <input type="text" class="form-input option-input" placeholder="Жауап нұсқасы ${optionLetters[optionCount]}">
+          <input type="${document.querySelector('input[name="testType"]:checked').value === 'multiple' ? 'checkbox' : 'radio'}" 
+                 name="correct-${questionId}" 
+                 class="correct-checkbox" 
+                 value="${optionCount}">
+        </div>
+      `;
+      
+      optionsContainer.insertAdjacentHTML('beforeend', optionHTML);
+    }
+
+    function removeQuestion(questionId) {
+      const questionElement = document.getElementById(`question-${questionId}`);
+      if (questionElement) {
+        questionElement.remove();
+        updateQuestionNumbers();
+      }
+    }
+
+    function updateQuestionNumbers() {
+      const questions = document.querySelectorAll('.question-container');
+      questions.forEach((question, index) => {
+        const title = question.querySelector('.question-title');
+        if (title) {
+          title.textContent = `${index + 1}. Сұрақ`;
+        }
+      });
+    }
+
+    // ========== ТЕСТ ФУНКЦИЯЛАРЫ ==========
+    function saveTest() {
+      // Негізгі ақпаратты алу
+      currentTest.name = document.getElementById('testName').value.trim();
+      currentTest.subject = document.getElementById('testSubject').value;
+      currentTest.grade = document.getElementById('testGrade').value;
+      currentTest.date = document.getElementById('testDate').value;
+      currentTest.type = document.querySelector('input[name="testType"]:checked').value;
+      currentTest.instructions = document.getElementById('testInstructions').value.trim();
+      
+      // Валидация
+      if (!currentTest.name) {
+        alert('Тест атауын енгізіңіз!');
+        return;
+      }
+      
+      if (!currentTest.subject) {
+        alert('Пәнді таңдаңыз!');
+        return;
+      }
+      
+      if (!currentTest.grade) {
+        alert('Сыныпты таңдаңыз!');
+        return;
+      }
+      
+      if (!currentTest.date) {
+        alert('Күнді таңдаңыз!');
+        return;
+      }
+      
+      // Сұрақтарды жинау
+      currentTest.questions = [];
+      const questionElements = document.querySelectorAll('.question-container');
+      
+      if (questionElements.length === 0) {
+        alert('Кем дегенде бір сұрақ қосыңыз!');
+        return;
+      }
+      
+      questionElements.forEach((questionElement, index) => {
+        const questionText = questionElement.querySelector('.question-text').value.trim();
+        const optionInputs = questionElement.querySelectorAll('.option-input');
+        const correctCheckboxes = questionElement.querySelectorAll('.correct-checkbox');
+        
+        if (!questionText) {
+          alert(`${index + 1}. сұрақтың мәтінін енгізіңіз!`);
+          return;
+        }
+        
+        const options = [];
+        const correctAnswers = [];
+        
+        optionInputs.forEach((input, i) => {
+          if (input.value.trim()) {
+            options.push(input.value.trim());
+            if (correctCheckboxes[i] && correctCheckboxes[i].checked) {
+              correctAnswers.push(i);
+            }
+          }
+        });
+        
+        if (options.length < 2) {
+          alert(`${index + 1}. сұрақта кем дегенде 2 жауап нұсқасы болуы керек!`);
+          return;
+        }
+        
+        if (currentTest.type !== 'withAnswers' && correctAnswers.length === 0) {
+          alert(`${index + 1}. сұрақта дұрыс жауапты белгілеңіз!`);
+          return;
+        }
+        
+        currentTest.questions.push({
+          id: Date.now() + index,
+          text: questionText,
+          options: options,
+          correctAnswers: correctAnswers,
+          type: currentTest.type
+        });
+      });
+      
+      // Тестке ID беру
+      if (!currentTest.id) {
+        currentTest.id = Date.now();
+        currentTest.createdAt = new Date().toISOString();
+      }
+      
+      // Сақтау
+      const existingIndex = savedTests.findIndex(t => t.id === currentTest.id);
+      if (existingIndex !== -1) {
+        savedTests[existingIndex] = {...currentTest};
+      } else {
+        savedTests.push({...currentTest});
+      }
+      
+      localStorage.setItem('teacherTests', JSON.stringify(savedTests));
+      
+      alert(`"${currentTest.name}" тесті сәтті сақталды!`);
+      
+      // "Менің тесттерім" тапсырмасына ауысу
+      showTab('my-tests');
+    }
+
+    function resetTest() {
+      if (confirm('Барлық енгізілген ақпараттар өшіріледі. Жалғастырасыз ба?')) {
+        document.getElementById('testName').value = '';
+        document.getElementById('testSubject').value = '';
+        document.getElementById('testGrade').value = '';
+        document.getElementById('testDate').value = '';
+        document.getElementById('testInstructions').value = '';
+        document.getElementById('questionsContainer').innerHTML = '';
+        
+        currentTest = {
+          id: null,
+          name: '',
+          subject: '',
+          grade: '',
+          date: '',
+          type: 'single',
+          instructions: '',
+          questions: []
+        };
+      }
+    }
+
+    function previewTest() {
+      // Алдымен тестті сақтау
+      saveTest();
+      
+      if (currentTest.questions.length === 0) {
+        alert('Алдын ала қарау үшін алдымен тестті сақтаңыз!');
+        return;
+      }
+      
+      // Алдын ала қарау мазмұнын толтыру
+      document.getElementById('previewTestName').textContent = currentTest.name;
+      document.getElementById('previewTestInfo').textContent = 
+        `${currentTest.subject} • ${currentTest.grade} • ${formatDate(currentTest.date)}`;
+      
+      let previewHTML = '';
+      currentTest.questions.forEach((question, index) => {
+        previewHTML += `
+          <div class="preview-question">
+            <div style="font-weight: 600; margin-bottom: 0.5rem;">${index + 1}. ${question.text}</div>
+            <div style="margin-left: 1rem;">
+              ${question.options.map((option, i) => `
+                <div>${String.fromCharCode(65 + i)}) ${option}</div>
+              `).join('')}
+            </div>
+            <div class="preview-answer">
+              <i class="fas fa-check-circle"></i> Дұрыс жауаптар: 
+              ${question.correctAnswers.map(i => String.fromCharCode(65 + i)).join(', ')}
+            </div>
+          </div>
+        `;
+      });
+      
+      document.getElementById('previewQuestions').innerHTML = previewHTML;
+      
+      // Алдын ала қарау бөлімін көрсету
+      document.getElementById('testPreview').style.display = 'block';
+      document.getElementById('testPreview').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closePreview() {
+      document.getElementById('testPreview').style.display = 'none';
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('kk-KZ');
+    }
+
+    // ========== ТЕСТ ЖІБЕРУ ФУНКЦИЯЛАРЫ ==========
+    function loadTestsForSending() {
+      const selectElement = document.getElementById('testToSend');
+      selectElement.innerHTML = '<option value="">Тест таңдаңыз...</option>';
+      
+      savedTests.forEach(test => {
+        const option = document.createElement('option');
+        option.value = test.id;
+        option.textContent = `${test.name} (${test.subject}, ${test.grade})`;
+        selectElement.appendChild(option);
+      });
+    }
+
+    function loadTestForSending() {
+      const testId = document.getElementById('testToSend').value;
+      if (!testId) return;
+      
+      const test = savedTests.find(t => t.id == testId);
+      if (!test) return;
+      
+      // Күндерді толтыру
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      document.getElementById('startDate').value = today.toISOString().slice(0, 16);
+      document.getElementById('endDate').value = tomorrow.toISOString().slice(0, 16);
+    }
+
+    function sendTest() {
+      const testId = document.getElementById('testToSend').value;
+      if (!testId) {
+        alert('Жіберу үшін тест таңдаңыз!');
+        return;
+      }
+      
+      const test = savedTests.find(t => t.id == testId);
+      if (!test) return;
+      
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const showAnswers = document.getElementById('showAnswers').checked;
+      
+      // Модал терезенің хабарламасын жаңарту
+      document.getElementById('sendTestMessage').innerHTML = `
+        <strong>${test.name}</strong> тесті оқушыларға жіберілді.<br>
+        Басталуы: ${formatDateTime(startDate)}<br>
+        Аяқталуы: ${formatDateTime(endDate)}<br>
+        ${showAnswers ? '✓ Жауаптар көрсетіледі' : '✗ Жауаптар көрсетілмейді'}
+      `;
+      
+      showModal('sendTestModal');
+    }
+
+    function formatDateTime(dateTimeString) {
+      if (!dateTimeString) return '';
+      const date = new Date(dateTimeString);
+      return date.toLocaleString('kk-KZ');
+    }
+
+    // ========== МЕНІҢ ТЕСТТЕРІМ ФУНКЦИЯЛАРЫ ==========
+    function loadMyTests() {
+      const container = document.getElementById('myTestsList');
+      
+      if (savedTests.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 3rem;">
+              <div style="color: var(--gray);">
+                <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <p>Әзірге сақталған тест жоқ</p>
+                <button class="btn btn-outline" onclick="showTab('create-test')" style="margin-top: 1rem;">
+                  <i class="fas fa-plus"></i> Бірінші тесті құру
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      let tableHTML = '';
+      savedTests.forEach(test => {
+        tableHTML += `
+          <tr>
+            <td>
+              <div style="font-weight: 600;">${test.name}</div>
+              <div style="font-size: 0.9rem; color: var(--gray);">
+                ${test.questions.length} сұрақ • ${test.type === 'withAnswers' ? 'Жауабымен' : 'Жауабысыз'}
+              </div>
+            </td>
+            <td>${test.subject}</td>
+            <td>${test.grade}</td>
+            <td>${formatDate(test.date)}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn edit" onclick="editTest(${test.id})" title="Өңдеу">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" onclick="deleteTest(${test.id})" title="Жою">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="action-btn view" onclick="sendSelectedTest(${test.id})" title="Жіберу">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      
+      container.innerHTML = tableHTML;
+    }
+
+    function editTest(testId) {
+      const test = savedTests.find(t => t.id == testId);
+      if (!test) return;
+      
+      // Ақпаратты толтыру
+      currentTest = {...test};
+      
+      document.getElementById('testName').value = test.name;
+      document.getElementById('testSubject').value = test.subject;
+      document.getElementById('testGrade').value = test.grade;
+      document.getElementById('testDate').value = test.date;
+      document.getElementById('testInstructions').value = test.instructions;
+      
+      // Тест түрін белгілеу
+      document.querySelectorAll('input[name="testType"]').forEach(radio => {
+        radio.checked = (radio.value === test.type);
+      });
+      
+      // Сұрақтарды толтыру
+      document.getElementById('questionsContainer').innerHTML = '';
+      test.questions.forEach((question, index) => {
+        const questionId = Date.now() + index;
+        
+        const questionHTML = `
+          <div class="question-container" id="question-${questionId}">
+            <div class="question-header">
+              <div>
+                <div class="question-title">${index + 1}. Сұрақ</div>
+                <div style="font-size: 0.9rem; color: var(--gray); margin-top: 0.25rem;">
+                  Дұрыс жауаптарды белгілеңіз
+                </div>
+              </div>
+              <span class="question-type-badge" style="background: rgba(67, 97, 238, 0.1); color: var(--primary);">
+                ${test.type === 'single' ? 'Бір дұрыс' : test.type === 'multiple' ? 'Бірнеше дұрыс' : 'Жауабымен'}
+              </span>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Сұрақ мәтіні</label>
+              <textarea class="form-textarea question-text" placeholder="Сұрақ мәтінін енгізіңіз..." rows="2">${question.text}</textarea>
+            </div>
+            
+            <div class="question-options" id="options-${questionId}">
+              ${question.options.map((option, i) => `
+                <div class="option-item ${question.correctAnswers.includes(i) ? 'correct' : ''}">
+                  <span class="option-label">${String.fromCharCode(65 + i)}</span>
+                  <input type="text" class="form-input option-input" placeholder="Жауап нұсқасы" value="${option}">
+                  <input type="${test.type === 'multiple' ? 'checkbox' : 'radio'}" 
+                         name="correct-${questionId}" 
+                         class="correct-checkbox" 
+                         value="${i}"
+                         ${question.correctAnswers.includes(i) ? 'checked' : ''}>
+                </div>
+              `).join('')}
+            </div>
+            
+            <button type="button" class="add-option-btn" onclick="addOption(${questionId})">
+              <i class="fas fa-plus"></i> Жауап нұсқасын қосу
+            </button>
+            
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+              <button type="button" class="remove-question-btn" onclick="removeQuestion(${questionId})">
+                <i class="fas fa-trash"></i> Сұрақты жою
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('questionsContainer').insertAdjacentHTML('beforeend', questionHTML);
+      });
+      
+      // "Тест құру" тапсырмасына ауысу
+      showTab('create-test');
+      
+      // Хабарлама
+      alert(`"${test.name}" тесті өңдеу режиміне өттіңіз. Өзгерістерді жасап, "Тестті сақтау" батырмасын басыңыз.`);
+    }
+
+    function deleteTest(testId) {
+      if (confirm('Тестті жоюға сенімдісіз бе?')) {
+        savedTests = savedTests.filter(t => t.id != testId);
+        localStorage.setItem('teacherTests', JSON.stringify(savedTests));
+        loadMyTests();
+        alert('Тест жойылды!');
+      }
+    }
+
+    function sendSelectedTest(testId) {
+      // "Тест жіберу" тапсырмасына ауысу
+      showTab('send-test');
+      
+      // Тестті таңдау
+      const selectElement = document.getElementById('testToSend');
+      selectElement.value = testId;
+      
+      // Тест ақпаратын толтыру
+      loadTestForSending();
+    }
+
+    // ========== БАСТАПҚЫ БАПТАУ ==========
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sidebar басқару
+      document.getElementById('menuToggle').addEventListener('click', toggleSidebar);
+      
+      document.getElementById('sidebarOverlay').addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+      
+      // Навигация
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const pageId = this.getAttribute('data-page');
+          if (pageId) {
+            showPage(pageId);
+          }
+        });
+      });
+      
+      // Тапсырма түймелері
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          if (tabId) {
+            showTab(tabId);
+          }
+        });
+      });
+      
+      // Күнді автоматты толтыру
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('testDate').value = today;
+      currentTest.date = today;
+      
+      // Шығу түймесі
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('Шынымен шығқыңыз келе ме?')) {
+          alert('Жүйеден шықтыңыз');
+        }
+      });
+      
+      // ESC пернесімен модал терезелерді жабу
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          const modals = document.querySelectorAll('.modal.active');
+          modals.forEach(modal => {
+            modal.classList.remove('active');
+          });
+          document.body.style.overflow = '';
+        }
+      });
+      
+      // Бастапқы тест қосу
+      addQuestion();
+    });
+  </script>
+</body>
+</html>

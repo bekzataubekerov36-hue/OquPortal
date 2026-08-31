@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>OquPortal — Тіркелу / Кіру</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e1e5e9;
+    }
+
+    .left-section {
+      flex: 1;
+      background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+      color: white;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .left-section h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .left-section p {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.95;
+      margin-bottom: 30px;
+    }
+
+    .features {
+      list-style: none;
+      margin-top: 40px;
+    }
+
+    .features li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 15px;
+      padding: 8px 0;
+    }
+
+    .features li::before {
+      content: "✓";
+      margin-right: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .separator {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 30px 0;
+    }
+
+    .right-section {
+      flex: 1;
+      padding: 50px 40px;
+      background: white;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo h2 {
+      font-size: 32px;
+      color: #3a0ca3;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .logo p {
+      color: #6c757d;
+      font-size: 15px;
+      margin-top: 0;
+    }
+
+    .form-tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 16px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      color: #6c757d;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-btn.active {
+      color: #4361ee;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #4361ee;
+    }
+
+    .form-content {
+      margin-top: 24px;
+    }
+
+    .alert {
+      padding: 14px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+      background: #e8f4ff;
+      color: #4361ee;
+      border: 1px solid #d0e3ff;
+    }
+
+    .alert-error {
+      background: #ffeaea;
+      color: #dc3545;
+      border: 1px solid #ffcccc;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #4361ee;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .role-selector {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .role-option {
+      flex: 1;
+      padding: 14px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      background: #f8f9fa;
+    }
+
+    .role-option.active {
+      border-color: #4361ee;
+      background: #f0f4ff;
+      color: #4361ee;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: #4361ee;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      background: #3a56d4;
+      transform: translateY(-1px);
+    }
+
+    .logout-section {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid #e9ecef;
+      text-align: center;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: inline-block;
+    }
+
+    .logout-btn:hover {
+      background: #c82333;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .left-section {
+        padding: 40px 30px;
+      }
+      
+      .right-section {
+        padding: 40px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Сол жақ бөлім (суреттегідей) -->
+    <div class="left-section">
+      <h1>OquPortal-ға қош келдіңіз!</h1>
+      <p>Білім мен біліктерді бірге дамытатын заманауи білім беру платформасы. Оқушылар мен мұғалімдер үшін ыңғайлы интерфейс.</p>
+      
+      <div class="separator"></div>
+      
+      <ul class="features">
+        <li>Оқушыларға арналған жеке кабинет</li>
+        <li>Мұғалімдерге арналған басқару панелі</li>
+        <li>Бағаларды қарау және тапсырмалар</li>
+        <li>Онлайн материалдар мен ресурстар</li>
+        <li>Қауіпсіз және жылдам қолдау</li>
+      </ul>
+    </div>
+
+    <!-- Оң жақ бөлім (авторизация) -->
+    <div class="right-section">
+      <div class="logo">
+        <h2>OquPortal</h2>
+        <p>Білім — болашаққа қадам</p>
+      </div>
+
+      <div class="form-tabs">
+        <button class="tab-btn active" onclick="switchTab('register')">Тіркелу</button>
+        <button class="tab-btn" onclick="switchTab('login')">Кіру</button>
+      </div>
+
+      <!-- Тіркелу формасы -->
+      <div id="register-form" class="form-content">
+        <div id="register-alert" class="alert"></div>
+        
+        <div class="form-group">
+          <input type="text" id="reg-fullName" class="form-control" placeholder="Аты-жөніңіз">
+        </div>
+        
+        <div class="form-group">
+          <input type="text" id="reg-school" class="form-control" placeholder="Мектеп атауы">
+        </div>
+
+        <div class="form-group">
+          <div class="role-selector">
+            <div class="role-option active" onclick="selectRole('student')">Оқушы</div>
+            <div class="role-option" onclick="selectRole('teacher')">Мұғалім</div>
+          </div>
+        </div>
+
+        <div id="grade-field" class="form-group">
+          <input type="text" id="reg-grade" class="form-control" placeholder="Сынып (мысалы: 9А)">
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="reg-username" class="form-control" placeholder="Логин құрыңыз">
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="reg-password" class="form-control" placeholder="Құпиясөз құрыңыз">
+        </div>
+
+        <button class="submit-btn" onclick="register()">Тіркелуді аяқтау</button>
+      </div>
+
+      <!-- Кіру формасы -->
+      <div id="login-form" class="form-content" style="display: none;">
+        <div id="login-alert" class="alert"></div>
+        
+        <div class="form-group">
+          <input type="text" id="login-username" class="form-control" placeholder="Логин">
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="login-password" class="form-control" placeholder="Құпиясөз">
+        </div>
+
+        <button class="submit-btn" onclick="login()">Жүйеге кіру</button>
+      </div>
+
+      <!-- Шығу бөлімі -->
+      <div class="logout-section">
+        <button class="logout-btn" onclick="logout()" id="logoutBtn" style="display: none;">Жүйеден шығу</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Жүктелген пайдаланушыларды сақтау
+    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+    let currentRole = 'student';
+
+    // Тіркелу немесе кіру формасын ауыстыру
+    function switchTab(tab) {
+      // Түймелерді белгілеу
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Формаларды көрсету/жасыру
+      document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      
+      // Хабарламаларды жасыру
+      hideAlerts();
+    }
+
+    // Рөлді таңдау
+    function selectRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-option').forEach(opt => opt.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Сынып өрісін көрсету/жасыру
+      const gradeField = document.getElementById('grade-field');
+      gradeField.style.display = role === 'student' ? 'block' : 'none';
+    }
+
+    // Хабарламаны көрсету
+    function showAlert(type, message, form) {
+      const alertDiv = document.getElementById(`${form}-alert`);
+      alertDiv.textContent = message;
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.style.display = 'block';
+    }
+
+    // Хабарламаларды жасыру
+    function hideAlerts() {
+      const registerAlert = document.getElementById('register-alert');
+      const loginAlert = document.getElementById('login-alert');
+      if (registerAlert) registerAlert.style.display = 'none';
+      if (loginAlert) loginAlert.style.display = 'none';
+    }
+
+    // Тіркелу функциясы
+    function register() {
+      const fullName = document.getElementById('reg-fullName').value.trim();
+      const school = document.getElementById('reg-school').value.trim();
+      const grade = document.getElementById('reg-grade').value.trim();
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+
+      // Тексерулер
+      if (!fullName || !school || !username || !password) {
+        showAlert('error', 'Барлық міндетті өрістерді толтырыңыз!', 'register');
+        return;
+      }
+
+      if (currentRole === 'student' && !grade) {
+        showAlert('error', 'Оқушы үшін сыныпты көрсету міндетті!', 'register');
+        return;
+      }
+
+      // Логиннің бос еместігін тексеру
+      const existingUser = users.find(u => u.username === username);
+      if (existingUser) {
+        showAlert('error', 'Бұл логин бұрыннан қолданыста!', 'register');
+        return;
+      }
+
+      // Жаңа пайдаланушыны құру
+      const newUser = {
+        fullName,
+        school,
+        grade: currentRole === 'student' ? grade : '',
+        username,
+        password,
+        role: currentRole,
+        registeredDate: new Date().toISOString()
+      };
+
+      // Сақтау
+      users.push(newUser);
+      localStorage.setItem('registeredUsers', JSON.stringify(users));
+      localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+      showAlert('success', 'Тіркелу сәтті аяқталды! Жүйеге кіру...', 'register');
+      
+      // 2 секундтан кейін бетке өту
+      setTimeout(() => {
+        redirectTo(currentRole);
+      }, 2000);
+    }
+
+    // Кіру функциясы
+    function login() {
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (!username || !password) {
+        showAlert('error', 'Логин мен құпиясөзді енгізіңіз!', 'login');
+        return;
+      }
+
+      // Пайдаланушыны табу
+      const user = users.find(u => u.username === username && u.password === password);
+      
+      if (!user) {
+        showAlert('error', 'Қате логин немесе құпиясөз!', 'login');
+        return;
+      }
+
+      // Ағымдағы пайдаланушыны сақтау
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      showAlert('success', 'Кіру сәтті! Өз бетіңізге өтілуде...', 'login');
+      
+      // 1 секундтан кейін бетке өту
+      setTimeout(() => {
+        redirectTo(user.role);
+      }, 1000);
+    }
+
+    // Жүйеден шығу
+    function logout() {
+      localStorage.removeItem('currentUser');
+      showAlert('success', 'Сіз жүйеден сәтті шықтыңыз!', 'login');
+      document.getElementById('logoutBtn').style.display = 'none';
+      switchTab('login');
+    }
+
+    // Тиісті бетке өту
+    function redirectTo(role) {
+      if (role === 'student') {
+        window.location.href = 'student.html';
+      } else {
+        window.location.href = 'teacher.html';
+      }
+    }
+
+    // Бастапқы параметрлер
+    document.addEventListener('DOMContentLoaded', function() {
+      // Егер ағымдағы пайдаланушы болса, шығу түймесін көрсету
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        document.getElementById('logoutBtn').style.display = 'block';
+      }
+
+      // Егер бір пайдаланушы тіркелген болса, кіру формасына өтуді ұсыну
+      if (users.length > 0) {
+        showAlert('success', `${users.length} пайдаланушы тіркелген. Кіру формасына өтіңіз.`, 'register');
+      }
+    });
+  </script>
+</body>
+</html>

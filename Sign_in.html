@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>EduPortal — Кіру</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #2d6cdf;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #1b4ba0;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>EduPortal</h2>
+    <div id="form-area"></div>
+  </div>
+
+  <script>
+    const formArea = document.getElementById("form-area");
+    const users = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+    // Ешкім автомат кірмесін
+    // (currentUser тек login/register арқылы жазылады)
+
+    if (users.length === 0) {
+      showRegistrationForm();
+    } else {
+      showLoginForm();
+    }
+
+    function showRegistrationForm() {
+      formArea.innerHTML = `
+        <p>Тіркелу</p>
+        <input type="text" id="fullName" placeholder="Аты-жөніңіз">
+        <input type="text" id="school" placeholder="Мектеп">
+        <input type="text" id="grade" placeholder="Сынып (мысалы 9А)">
+        <input type="text" id="username" placeholder="Логин">
+        <input type="password" id="password" placeholder="Құпиясөз">
+        <select id="role">
+          <option value="student">Оқушы</option>
+          <option value="teacher">Мұғалім</option>
+        </select>
+        <button onclick="register()">Тіркелу</button>
+      `;
+    }
+
+    function showLoginForm() {
+      formArea.innerHTML = `
+        <p>Жүйеге кіру</p>
+        <input type="text" id="username" placeholder="Логин">
+        <input type="password" id="password" placeholder="Құпиясөз">
+        <button onclick="login()">Кіру</button>
+      `;
+    }
+
+    function register() {
+      const fullName = document.getElementById("fullName").value.trim();
+      const school = document.getElementById("school").value.trim();
+      const grade = document.getElementById("grade").value.trim();
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+
+      if (!fullName || !school || !grade || !username || !password) {
+        alert("Барлық өрістерді толтырыңыз!");
+        return;
+      }
+
+      const duplicate = users.find(u => u.username === username);
+      if (duplicate) {
+        alert("Бұл логин бұрыннан бар!");
+        return;
+      }
+
+      const newUser = { fullName, school, grade, username, password, role };
+      users.push(newUser);
+      localStorage.setItem("registeredUsers", JSON.stringify(users));
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
+      redirectToRole(role);
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      const foundUser = users.find(u => u.username === username && u.password === password);
+      if (!foundUser) {
+        alert("Қате логин немесе құпиясөз!");
+        return;
+      }
+
+      localStorage.setItem("currentUser", JSON.stringify(foundUser));
+      redirectToRole(foundUser.role);
+    }
+
+    function redirectToRole(role) {
+      if (role === "student") {
+        window.location.href = "student.html";
+      } else if (role === "teacher") {
+        window.location.href = "teacher.html";
+      }
+    }
+  </script>
+</body>
+</html>

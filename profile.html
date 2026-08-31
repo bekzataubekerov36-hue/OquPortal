@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <title>Оқушылар нәтижесі — EduPortal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+    h2 {
+      text-align: center;
+      color: #2d6cdf;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background: #2d6cdf;
+      color: white;
+    }
+    button {
+      background: #d9534f;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <h2>Оқушылардың тест нәтижелері</h2>
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>Аты-жөні</th>
+        <th>Сынып</th>
+        <th>Логин</th>
+        <th>Ұпай</th>
+        <th>Күні</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div style="text-align: center;">
+    <button onclick="logout()">Шығу</button>
+  </div>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser || currentUser.role !== "teacher") {
+      alert("Қол жеткізу тек мұғалімдерге арналған.");
+      window.location.href = "login.html";
+    }
+
+    const results = JSON.parse(localStorage.getItem("testResults")) || [];
+
+    const tbody = document.querySelector("#resultsTable tbody");
+    results.forEach(result => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${result.fullName}</td>
+        <td>${result.grade}</td>
+        <td>${result.username}</td>
+        <td>${result.score}</td>
+        <td>${result.date}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
